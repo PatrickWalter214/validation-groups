@@ -1,6 +1,7 @@
 package com.validationgroups;
 
 import com.validationgroups.beans.AtLeastFieldAnnotatedBean;
+import com.validationgroups.beans.AtLeastFieldAnnotatedBeanWithMin2;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -38,6 +39,31 @@ class AtLeastTest {
         AtLeastFieldAnnotatedBean atLeastFieldAnnotatedBean = new AtLeastFieldAnnotatedBean();
 
         Set<ConstraintViolation<AtLeastFieldAnnotatedBean>> constraintViolations =
+                validator.validate(atLeastFieldAnnotatedBean);
+
+        assertThat(constraintViolations).hasSize(1);
+        assertThat(constraintViolations.iterator().next().getMessage())
+                .isEqualTo("The number of fields that must at least be set was not reached");
+    }
+
+    @Test
+    void shouldSuccessfullyValidateAtLeastTwo() {
+        AtLeastFieldAnnotatedBeanWithMin2 atLeastFieldAnnotatedBean = new AtLeastFieldAnnotatedBeanWithMin2();
+        atLeastFieldAnnotatedBean.setFieldOne("value");
+        atLeastFieldAnnotatedBean.setFieldTwo("value");
+
+        Set<ConstraintViolation<AtLeastFieldAnnotatedBeanWithMin2>> constraintViolations =
+                validator.validate(atLeastFieldAnnotatedBean);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    @Test
+    void shouldViolateValidationAtLeastTwo() {
+        AtLeastFieldAnnotatedBeanWithMin2 atLeastFieldAnnotatedBean = new AtLeastFieldAnnotatedBeanWithMin2();
+        atLeastFieldAnnotatedBean.setFieldOne("value");
+
+        Set<ConstraintViolation<AtLeastFieldAnnotatedBeanWithMin2>> constraintViolations =
                 validator.validate(atLeastFieldAnnotatedBean);
 
         assertThat(constraintViolations).hasSize(1);

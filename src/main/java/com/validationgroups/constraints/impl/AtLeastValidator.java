@@ -35,7 +35,7 @@ public class AtLeastValidator implements ConstraintValidator<AtLeastConstraint, 
                         .filter(Objects::nonNull)
                         .count();
 
-        return nonEmptyFields >= 1;
+        return nonEmptyFields >= atLeastConstraint.min();
     }
 
     private Object getFieldValue(Object object, Field field) {

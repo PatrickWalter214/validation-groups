@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AtLeastConstraint {
     String group();
+    int min() default 1;
     String message() default "The number of fields that must at least be set was not reached";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
