@@ -16,9 +16,4 @@ public class AtLeastFieldAnnotatedBean {
     @ValidationGroup(group = "GroupOne")
     private String fieldTwo;
 
-    @ValidationGroup(group = "GroupTwo")
-    private String fieldThree;
-
-    private String fieldFour;
-
 }
