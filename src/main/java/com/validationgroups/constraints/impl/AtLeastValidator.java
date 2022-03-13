@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class AtLeastValidator implements ConstraintValidator<AtLeastConstraint, Object> {
@@ -32,7 +32,7 @@ public class AtLeastValidator implements ConstraintValidator<AtLeastConstraint, 
 
         long nonEmptyFields =
                 fieldsWithValidationGroup.map(field -> getFieldValue(object, field))
-                        .filter(Objects::nonNull)
+                        .filter(instantiateEmptyChecker().negate())
                         .count();
 
         return nonEmptyFields >= atLeastConstraint.min();
@@ -43,6 +43,14 @@ public class AtLeastValidator implements ConstraintValidator<AtLeastConstraint, 
         try {
             return field.get(object);
         } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Predicate<Object> instantiateEmptyChecker() {
+        try {
+            return atLeastConstraint.emptyChecker().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
