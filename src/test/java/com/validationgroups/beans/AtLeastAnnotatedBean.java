@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AtLeastConstraint(group = "GroupOne")
-public class AtLeastFieldAnnotatedBean {
+public class AtLeastAnnotatedBean {
 
     @ValidationGroup(group = "GroupOne")
     private String fieldOne;
