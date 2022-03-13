@@ -1,5 +1,6 @@
 package com.validationgroups;
 
+import com.validationgroups.beans.AtLeastAnnotatedBeanWithStringEmptyChecker;
 import com.validationgroups.beans.AtLeastFieldAnnotatedBean;
 import com.validationgroups.beans.AtLeastFieldAnnotatedBeanWithMin2;
 import jakarta.validation.ConstraintViolation;
@@ -65,6 +66,43 @@ class AtLeastTest {
 
         Set<ConstraintViolation<AtLeastFieldAnnotatedBeanWithMin2>> constraintViolations =
                 validator.validate(atLeastFieldAnnotatedBean);
+
+        assertThat(constraintViolations).hasSize(1);
+        assertThat(constraintViolations.iterator().next().getMessage())
+                .isEqualTo("The number of fields that must at least be set was not reached");
+    }
+
+    @Test
+    void shouldSuccessfullyValidateAtLeastOneWithStringEmptyChecker() {
+        AtLeastAnnotatedBeanWithStringEmptyChecker atLeastAnnotatedBean =
+                new AtLeastAnnotatedBeanWithStringEmptyChecker();
+        atLeastAnnotatedBean.setFieldOne("value");
+
+        Set<ConstraintViolation<AtLeastAnnotatedBeanWithStringEmptyChecker>> constraintViolations =
+                validator.validate(atLeastAnnotatedBean);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    @Test
+    void shouldSuccessfullyValidateAtLeastOneWithDefaultEmptyChecker() {
+        AtLeastFieldAnnotatedBean atLeastAnnotatedBean = new AtLeastFieldAnnotatedBean();
+        atLeastAnnotatedBean.setFieldOne("");
+
+        Set<ConstraintViolation<AtLeastFieldAnnotatedBean>> constraintViolations =
+                validator.validate(atLeastAnnotatedBean);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    @Test
+    void shouldViolateValidationAtLeastOneWithStringEmptyChecker() {
+        AtLeastAnnotatedBeanWithStringEmptyChecker atLeastAnnotatedBean =
+                new AtLeastAnnotatedBeanWithStringEmptyChecker();
+        atLeastAnnotatedBean.setFieldOne("");
+
+        Set<ConstraintViolation<AtLeastAnnotatedBeanWithStringEmptyChecker>> constraintViolations =
+                validator.validate(atLeastAnnotatedBean);
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
