@@ -2,7 +2,7 @@ package com.validationgroups.beans;
 
 import com.validationgroups.annotations.ValidationGroup;
 import com.validationgroups.constraints.AtLeastConstraint;
-import com.validationgroups.constraints.StringEmptyChecker;
+import com.validationgroups.checkers.StringEmptyChecker;
 import lombok.Getter;
 import lombok.Setter;
 

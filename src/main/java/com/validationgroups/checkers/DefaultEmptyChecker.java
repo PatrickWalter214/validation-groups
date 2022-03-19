@@ -1,4 +1,4 @@
-package com.validationgroups.constraints;
+package com.validationgroups.checkers;
 
 import java.util.Objects;
 import java.util.function.Predicate;

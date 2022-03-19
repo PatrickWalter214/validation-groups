@@ -1,5 +1,6 @@
 package com.validationgroups.constraints;
 
+import com.validationgroups.checkers.DefaultEmptyChecker;
 import com.validationgroups.constraints.impl.AtLeastValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
