@@ -16,7 +16,7 @@ public @interface AtLeastConstraint {
     String group();
     int min() default 1;
     Class<? extends Predicate<Object>> emptyChecker() default DefaultEmptyChecker.class;
-    String message() default "The number of fields that must at least be set was not reached";
+    String message() default "Less than {min} field/s had a value in group {group}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 

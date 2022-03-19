@@ -45,7 +45,7 @@ class AtLeastTest {
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("The number of fields that must at least be set was not reached");
+                .isEqualTo("Less than 1 field/s had a value in group GroupOne");
     }
 
     @Test
@@ -70,7 +70,7 @@ class AtLeastTest {
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("The number of fields that must at least be set was not reached");
+                .isEqualTo("Less than 2 field/s had a value in group GroupOne");
     }
 
     @Test
@@ -107,7 +107,7 @@ class AtLeastTest {
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("The number of fields that must at least be set was not reached");
+                .isEqualTo("Less than 1 field/s had a value in group GroupOne");
     }
 
     @Test
@@ -129,10 +129,9 @@ class AtLeastTest {
                 validator.validate(atLeastAnnotatedBean);
 
         assertThat(constraintViolations).hasSize(2);
-        assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("The number of fields that must at least be set was not reached");
-        assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("The number of fields that must at least be set was not reached");
+        assertThat(constraintViolations).map(ConstraintViolation::getMessage).containsExactlyInAnyOrder(
+                "Less than 1 field/s had a value in group GroupOne",
+                "Less than 1 field/s had a value in group GroupTwo");
     }
 
     @Test
@@ -145,6 +144,6 @@ class AtLeastTest {
 
         assertThat(constraintViolations).hasSize(1);
         assertThat(constraintViolations.iterator().next().getMessage())
-                .isEqualTo("The number of fields that must at least be set was not reached");
+                .isEqualTo("Less than 1 field/s had a value in group GroupTwo");
     }
 }
