@@ -6,7 +6,9 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.lang.reflect.Field;
+import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -26,9 +28,11 @@ public class AtLeastValidator implements ConstraintValidator<AtLeastConstraint, 
 
         Stream<Field> fieldsWithValidationGroup =
                 Arrays.stream(fields)
-                        .filter(field -> field.getDeclaredAnnotation(ValidationGroup.class) != null)
-                        .filter(field -> atLeastConstraint.group()
-                                .equals(field.getDeclaredAnnotation(ValidationGroup.class).group()));
+                        .filter(field -> field.getDeclaredAnnotation(ValidationGroup.class) != null ||
+                                field.getDeclaredAnnotation(ValidationGroup.List.class) != null)
+                        .flatMap(this::mapFieldToFieldGroupPairs)
+                        .filter(fieldEntry -> atLeastConstraint.group().equals(fieldEntry.getValue()))
+                        .map(Map.Entry::getKey);
 
         long nonEmptyFields =
                 fieldsWithValidationGroup.map(field -> getFieldValue(object, field))
@@ -36,6 +40,18 @@ public class AtLeastValidator implements ConstraintValidator<AtLeastConstraint, 
                         .count();
 
         return nonEmptyFields >= atLeastConstraint.min();
+    }
+
+    private Stream<Map.Entry<Field, String>> mapFieldToFieldGroupPairs(Field field) {
+        if(field.getDeclaredAnnotation(ValidationGroup.List.class) != null) {
+            return Arrays.stream(field.getDeclaredAnnotation(ValidationGroup.List.class).value())
+                    .map(validationGroup -> new AbstractMap.SimpleEntry<>(field,
+                            validationGroup.group()));
+        }
+        else {
+            return Stream.of(new AbstractMap.SimpleEntry<>(field,
+                    field.getDeclaredAnnotation(ValidationGroup.class).group()));
+        }
     }
 
     private Object getFieldValue(Object object, Field field) {

@@ -1,8 +1,9 @@
 package com.validationgroups;
 
-import com.validationgroups.beans.AtLeastAnnotatedBeanWithStringEmptyChecker;
 import com.validationgroups.beans.AtLeastAnnotatedBean;
 import com.validationgroups.beans.AtLeastAnnotatedBeanWithMin2;
+import com.validationgroups.beans.AtLeastAnnotatedBeanWithStringEmptyChecker;
+import com.validationgroups.beans.AtLeastAnnotatedTwiceBean;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -102,6 +103,44 @@ class AtLeastTest {
         atLeastAnnotatedBean.setFieldOne("");
 
         Set<ConstraintViolation<AtLeastAnnotatedBeanWithStringEmptyChecker>> constraintViolations =
+                validator.validate(atLeastAnnotatedBean);
+
+        assertThat(constraintViolations).hasSize(1);
+        assertThat(constraintViolations.iterator().next().getMessage())
+                .isEqualTo("The number of fields that must at least be set was not reached");
+    }
+
+    @Test
+    void shouldSuccessfullyValidateAtLeastOneTwice() {
+        AtLeastAnnotatedTwiceBean atLeastAnnotatedBean = new AtLeastAnnotatedTwiceBean();
+        atLeastAnnotatedBean.setFieldTwo("value");
+
+        Set<ConstraintViolation<AtLeastAnnotatedTwiceBean>> constraintViolations =
+                validator.validate(atLeastAnnotatedBean);
+
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    @Test
+    void shouldViolateValidationAtLeastOneTwiceWithBothFailing() {
+        AtLeastAnnotatedTwiceBean atLeastAnnotatedBean = new AtLeastAnnotatedTwiceBean();
+
+        Set<ConstraintViolation<AtLeastAnnotatedTwiceBean>> constraintViolations =
+                validator.validate(atLeastAnnotatedBean);
+
+        assertThat(constraintViolations).hasSize(2);
+        assertThat(constraintViolations.iterator().next().getMessage())
+                .isEqualTo("The number of fields that must at least be set was not reached");
+        assertThat(constraintViolations.iterator().next().getMessage())
+                .isEqualTo("The number of fields that must at least be set was not reached");
+    }
+
+    @Test
+    void shouldViolateValidationAtLeastOneTwiceWithOnlyOneFailing() {
+        AtLeastAnnotatedTwiceBean atLeastAnnotatedBean = new AtLeastAnnotatedTwiceBean();
+        atLeastAnnotatedBean.setFieldOne("value");
+
+        Set<ConstraintViolation<AtLeastAnnotatedTwiceBean>> constraintViolations =
                 validator.validate(atLeastAnnotatedBean);
 
         assertThat(constraintViolations).hasSize(1);
